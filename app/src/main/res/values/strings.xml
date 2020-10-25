@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">easyCarnet</string>
+    <string name="example"><b>example</b></string>
+    <string name="bullet">■</string>
+    <string name="desc">gender</string>
+    <string name="nuevo">Nuevo Alumno</string>
+    <string name="carnet">carnet</string>
+    <string name="nombre">nombre</string>
+    <string name="apellido">apellido</string>
+    <string name="edad">edad</string>
+    <string name="f">F</string>
+    <string name="m">M</string>
+    <string name="reg">Registrarse</string>
+    <string name="curso">curso</string>
+    <string name="todo">TODO</string>
+    <string name="_0">0</string>
+    <string name="foto_carnet">foto carnet</string>
+    <string name="capturar">Capturar</string>
+    <string name="tildDesc">tiene imagen</string>
+    <string name="divisor">divisor</string>
+</resources>
