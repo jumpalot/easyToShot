@@ -9,9 +9,9 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.jumpalo.altavista.BuildConfig
 import com.jumpalo.altavista.DBCon
 import com.jumpalo.altavista.R
+import com.theartofdev.edmodo.cropper.BuildConfig
 import com.theartofdev.edmodo.cropper.CropImage.*
 import kotlinx.android.synthetic.main.activity_descripcion.*
 import java.io.File
