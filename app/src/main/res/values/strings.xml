@@ -18,4 +18,6 @@
     <string name="capturar">Capturar</string>
     <string name="tildDesc">tiene imagen</string>
     <string name="divisor">divisor</string>
+    <string name="turno">Turno:</string>
+    <string name="dni">Dni:</string>
 </resources>
