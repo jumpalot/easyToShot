@@ -30,7 +30,7 @@ class Descripcion : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_descripcion)
         alu = Alumnos()
-        alu.fromString(intent.extras?.getString("carnet") ?: "0")
+        alu.fromString(intent.extras?.getString("alumno") ?: "0")
         tv_carnet.text = alu.Carnet
         tv_dni.text = alu.Dni
         tv_nombre.text = alu.Apellido+" "+alu.Nombre
