@@ -36,7 +36,7 @@ class ListarDivi : AppCompatActivity() {
 
     fun descripcion(v : View) = startActivity (
         Intent(this, Descripcion::class.java)
-            .putExtra("carnet",v.tv_curso.tag.toString()),
+            .putExtra("alumno",v.tv_curso.tag.toString()),
         ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
     )
 }

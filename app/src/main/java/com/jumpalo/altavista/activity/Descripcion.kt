@@ -18,20 +18,24 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import com.jumpalo.altavista.Alumnos
 
 class Descripcion : AppCompatActivity() {
     private lateinit var photoURI : Uri
     private val codCaptura = 1
-    private lateinit var carnet : String
+    private lateinit var alu : Alumnos
     private val db = DBCon()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_descripcion)
-        carnet= intent.extras?.getString("carnet") ?: "0"
-        tv_carnet.text = carnet
+        alu = Alumnos(intent.extras?.getString("carnet") ?: "0")
+        tv_carnet.text = alu.Carnet
+        tv_dni.text = alu.Dni
+        tv_nombre.text = alu.Apellido+" "+alu.Nombre
+        tv_turno.text = alu.Turno
         progressBar.visibility = View.VISIBLE
-        imageView.setImageBitmap(db.getFoto(carnet))
+        imageView.setImageBitmap(db.getFoto(alu.Carnet))
         progressBar.visibility = View.INVISIBLE
     }
 
@@ -75,7 +79,7 @@ class Descripcion : AppCompatActivity() {
                 progressBar.visibility = View.VISIBLE
                 val bitmap =
                     MediaStore.Images.Media.getBitmap(this.contentResolver, result.uri)
-                db.sendFoto(bitmap, carnet)
+                db.sendFoto(bitmap, alu.Carnet)
                 imageView.setImageURI(result.uri)
                 progressBar.visibility = View.INVISIBLE
                 contentResolver.delete(photoURI, null, null)

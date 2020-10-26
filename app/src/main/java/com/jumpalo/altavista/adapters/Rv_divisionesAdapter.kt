@@ -13,7 +13,7 @@ class rv_divisionesAdapter(private val nombres: MutableList<Alumnos>) : Recycler
     class ViewHolder(var item : ItemCursoDescBinding) : RecyclerView.ViewHolder(item.root) {
         fun bind(al: Alumnos) {
             item.tvCurso.text = al.Nombre+" "+al.Apellido
-            item.tvCurso.tag = al.Carnet
+            item.tvCurso.tag = al.toString()
             if (al.hasImg==1){
                 item.check.visibility = View.VISIBLE
                 item.tvCurso.setTextColor(Color.GRAY)
