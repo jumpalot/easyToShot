@@ -29,7 +29,8 @@ class Descripcion : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_descripcion)
-        alu = Alumnos(intent.extras?.getString("carnet") ?: "0")
+        alu = Alumnos()
+        alu.fromString(intent.extras?.getString("carnet") ?: "0")
         tv_carnet.text = alu.Carnet
         tv_dni.text = alu.Dni
         tv_nombre.text = alu.Apellido+" "+alu.Nombre

@@ -7,11 +7,12 @@ class Alumnos(
     var Curso:String="",
     var Division:String="",
     var Turno:String="",
-    var Dni:String,
+    var Dni:String="",
     var hasImg:Int=0
 ){
+
     override fun toString() = "$Carnet,$Nombre,$Apellido,$Curso,$Division,$Turno,$Dni,$hasImg"
-    constructor(str : String){
+    fun fromString(str : String){
         if(str!="0"){
             val data = str.split(',')
             Carnet = data[0]; Dni = data[6]
