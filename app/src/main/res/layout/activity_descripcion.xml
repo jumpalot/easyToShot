@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".activity.Descripcion">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:importantForAccessibility="no"
+        app:backgroundTint="@color/colorAlternateLight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.65"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fab_capturar"
+        app:srcCompat="@drawable/ic_baseline_edit_24" />
+
     <TextView
         android:id="@+id/tv_carnet"
         android:layout_width="wrap_content"
@@ -53,16 +66,17 @@
         android:id="@+id/fab_capturar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:backgroundTint="@color/colorAccent"
-        app:srcCompat="@drawable/ic_baseline_camera_alt_24"
         android:layout_marginTop="32dp"
+        android:clickable="true"
+        android:importantForAccessibility="no"
         android:onClick="capturar"
         android:text="@string/capturar"
+        app:backgroundTint="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.35"
         app:layout_constraintStart_toStartOf="parent"
-        android:importantForAccessibility="no"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:srcCompat="@drawable/ic_baseline_camera_alt_24" />
 
     <View
         android:id="@+id/divider2"

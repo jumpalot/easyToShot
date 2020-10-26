@@ -5,4 +5,5 @@
     <color name="colorAccent">#0B8E0D</color>
     <color name="colorAlternate">#713B02</color>
     <color name="gris">#D6D6D6</color>
+    <color name="colorAlternateLight">#FFAC07</color>
 </resources>
