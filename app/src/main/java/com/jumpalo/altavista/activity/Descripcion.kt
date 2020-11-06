@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.jumpalo.altavista.DBCon
 import com.jumpalo.altavista.R
 import com.theartofdev.edmodo.cropper.BuildConfig
@@ -19,25 +20,32 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import com.jumpalo.altavista.Alumnos
+import com.jumpalo.altavista.databinding.SheetEditarBinding
 
 class Descripcion : AppCompatActivity() {
     private lateinit var photoURI : Uri
     private val codCaptura = 1
     private lateinit var alu : Alumnos
     private val db = DBCon()
+    private lateinit var sheet : BottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_descripcion)
-        alu = Alumnos()
-        alu.fromString(intent.extras?.getString("alumno") ?: "0")
-        tv_carnet.text = alu.Carnet
-        tv_dni.text = alu.Dni
-        tv_nombre.text = alu.Apellido+" "+alu.Nombre
-        tv_turno.text = alu.Turno
-        progressBar.visibility = View.VISIBLE
-        imageView.setImageBitmap(db.getFoto(alu.Carnet))
-        progressBar.visibility = View.INVISIBLE
+
+        alu = Alumnos().also {
+            it.fromString(
+                intent.extras?.getString("alumno") ?: "0"
+            )
+        }
+
+        viewBind()
+
+        sheet = BottomSheetDialog(this).also {
+            it.setContentView(
+                ediBind( SheetEditarBinding.inflate(layoutInflater) )
+            )
+        }
     }
 
     fun capturar(v: View) {
@@ -49,7 +57,7 @@ class Descripcion : AppCompatActivity() {
                 photoURI =
                     FileProvider.getUriForFile(
                         Objects.requireNonNull(applicationContext),
-                        BuildConfig.APPLICATION_ID + ".provider", photoFile
+                        "com.jumpalo.altavista.provider", photoFile
                     )
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                 startActivityForResult(takePictureIntent, codCaptura)
@@ -88,5 +96,26 @@ class Descripcion : AppCompatActivity() {
                 println(result.error)
             }
         }
+    }
+
+    fun editar(v : View) = sheet.show()
+
+    private fun viewBind(){
+        tv_carnet.text = alu.Carnet
+        tv_dni.text = alu.Dni
+        tv_nombre.text = alu.Apellido+" "+alu.Nombre
+        tv_turno.text = alu.Turno
+        progressBar.visibility = View.VISIBLE
+        imageView.setImageBitmap(db.getFoto(alu.Carnet))
+        progressBar.visibility = View.INVISIBLE
+    }
+    private fun ediBind(editador : SheetEditarBinding) : View {
+        editador.edDni.setText(alu.Dni)
+        editador.edNom.setText(alu.Nombre)
+        editador.edApe.setText(alu.Apellido)
+        editador.edTurno.setText(alu.Turno)
+        editador.edCurso.setText(alu.Curso)
+        editador.edDivision.setText(alu.Division)
+        return editador.root
     }
 }
