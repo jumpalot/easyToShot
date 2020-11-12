@@ -2,31 +2,35 @@ package com.jumpalo.altavista.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.jumpalo.altavista.Alumnos
 import com.jumpalo.altavista.DBCon
 import com.jumpalo.altavista.R
-import com.theartofdev.edmodo.cropper.BuildConfig
+import com.jumpalo.altavista.databinding.SheetEditarBinding
 import com.theartofdev.edmodo.cropper.CropImage.*
 import kotlinx.android.synthetic.main.activity_descripcion.*
+import org.apache.http.message.BasicNameValuePair
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import com.jumpalo.altavista.Alumnos
-import com.jumpalo.altavista.databinding.SheetEditarBinding
+
 
 class Descripcion : AppCompatActivity() {
     private lateinit var photoURI : Uri
     private val codCaptura = 1
     private lateinit var alu : Alumnos
     private val db = DBCon()
+    private var foto : Bitmap? = null
     private lateinit var sheet : BottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,12 +42,13 @@ class Descripcion : AppCompatActivity() {
                 intent.extras?.getString("alumno") ?: "0"
             )
         }
+        foto = db.getFoto(alu.Carnet)
 
         viewBind()
 
         sheet = BottomSheetDialog(this).also {
             it.setContentView(
-                ediBind( SheetEditarBinding.inflate(layoutInflater) )
+                ediBind(SheetEditarBinding.inflate(layoutInflater))
             )
         }
     }
@@ -98,7 +103,7 @@ class Descripcion : AppCompatActivity() {
         }
     }
 
-    fun editar(v : View) = sheet.show()
+    fun editar(v: View) = sheet.show()
 
     private fun viewBind(){
         tv_carnet.text = alu.Carnet
@@ -106,16 +111,51 @@ class Descripcion : AppCompatActivity() {
         tv_nombre.text = alu.Apellido+" "+alu.Nombre
         tv_turno.text = alu.Turno
         progressBar.visibility = View.VISIBLE
-        imageView.setImageBitmap(db.getFoto(alu.Carnet))
+        imageView.setImageBitmap(foto)
         progressBar.visibility = View.INVISIBLE
     }
-    private fun ediBind(editador : SheetEditarBinding) : View {
+    private fun ediBind(editador: SheetEditarBinding) : View {
+        editador.spTurno.adapter = ArrayAdapter.createFromResource(
+    this, R.array.turnos, android.R.layout.simple_spinner_item
+        ).also {
+            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        editador.spTurno.setSelection(
+            when(alu.Turno){
+                "Mañana" -> 0
+                "Tarde" -> 1
+                "Vespertino" -> 2
+                else -> 0
+            }
+        )
         editador.edDni.setText(alu.Dni)
         editador.edNom.setText(alu.Nombre)
         editador.edApe.setText(alu.Apellido)
-        editador.edTurno.setText(alu.Turno)
         editador.edCurso.setText(alu.Curso)
         editador.edDivision.setText(alu.Division)
+
+        editador.fabUpdate.setOnClickListener {
+            db.updateAlumno( mutableListOf(
+                BasicNameValuePair("dni", editador.edDni.text.toString()),
+                BasicNameValuePair("carnet", alu.Carnet),
+                BasicNameValuePair("nombre", editador.edNom.text.toString()),
+                BasicNameValuePair("apellido", editador.edApe.text.toString()),
+                BasicNameValuePair("curso", editador.edCurso.text.toString()),
+                BasicNameValuePair("division", editador.edDivision.text.toString()),
+                BasicNameValuePair("turno", editador.spTurno.selectedItemPosition.toString())
+            ))
+            alu = Alumnos(
+                alu.Carnet,
+                editador.edNom.text.toString(),
+                editador.edApe.text.toString(),
+                editador.edCurso.text.toString(),
+                editador.edDivision.text.toString(),
+                editador.spTurno.selectedItem.toString(),
+                editador.edDni.text.toString()
+            )
+            viewBind()
+            sheet.dismiss()
+        }
         return editador.root
     }
 }

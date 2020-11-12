@@ -1,12 +1,9 @@
 package com.jumpalo.altavista
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.UiThread
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.apache.http.client.HttpClient
@@ -117,6 +114,27 @@ class DBCon {
                 if (res.isNotBlank()) Log.w("foto", res)
             } catch(ex : Exception) {
                 Log.w("foto", ex.message ?: "error")
+            }
+        }
+        hilo.start()
+
+        while (hilo.isAlive){
+            Log.d("conexion", "Enviando datos")}
+    }
+
+    fun updateAlumno(alumno : MutableList<BasicNameValuePair>){
+        val httppost = HttpPost("$url/updateAlumnos.php")
+        httpclient.getConnectionManager().schemeRegistry.register(
+            Scheme("https", SSLSocketFactory.getSocketFactory(), 443)
+        )
+        val tachito = BasicResponseHandler()
+        val hilo = Thread {
+            try{
+                httppost.entity = UrlEncodedFormEntity(alumno)
+                val res = httpclient.execute(httppost, tachito)
+                if (res.isNotBlank()) Log.w("update alumno", res)
+            } catch(ex : Exception) {
+                Log.w("update alumno", ex.message ?: "error")
             }
         }
         hilo.start()
