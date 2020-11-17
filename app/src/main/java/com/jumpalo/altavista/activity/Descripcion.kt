@@ -93,9 +93,21 @@ class Descripcion : AppCompatActivity() {
                 progressBar.visibility = View.VISIBLE
                 val bitmap =
                     MediaStore.Images.Media.getBitmap(this.contentResolver, result.uri)
-                db.sendFoto(bitmap, alu.Carnet)
+                im_fail.visibility  = View.INVISIBLE
+                im_ok.visibility = View.INVISIBLE
+                Thread {
+                    var cont = 0
+                    while (cont<5) {
+                        if(db.sendFoto(bitmap, alu.Carnet)) break
+                        cont++
+                    }
+                    runOnUiThread{
+                        progressBar.visibility = View.INVISIBLE
+                        if(cont==5) im_fail.visibility  = View.VISIBLE
+                        else im_ok.visibility = View.VISIBLE
+                    }
+                }.start()
                 imageView.setImageURI(result.uri)
-                progressBar.visibility = View.INVISIBLE
                 contentResolver.delete(photoURI, null, null)
             } else if (resultCode == CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 println(result.error)

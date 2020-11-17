@@ -92,7 +92,7 @@ class DBCon {
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
     }
 
-    fun sendFoto(img:Bitmap, carnet: String){
+    fun sendFoto(img:Bitmap, carnet: String) : Boolean{
         val httppost = HttpPost("$url/setFoto.php")
         httpclient.getConnectionManager().schemeRegistry.register(
             Scheme("https", SSLSocketFactory.getSocketFactory(), 443)
@@ -107,19 +107,14 @@ class DBCon {
             BasicNameValuePair("carnet", carnet),
             BasicNameValuePair("foto", imagen)
         )
-        val hilo = Thread {
-            try{
-                httppost.entity = UrlEncodedFormEntity(valores)
-                val res = httpclient.execute(httppost, tachito)
-                if (res.isNotBlank()) Log.w("foto", res)
-            } catch(ex : Exception) {
-                Log.w("foto", ex.message ?: "error")
-            }
+        return try{
+            httppost.entity = UrlEncodedFormEntity(valores)
+            val res = httpclient.execute(httppost, tachito)
+            res.isBlank()
+        } catch(ex : Exception) {
+            Log.w("foto", ex.message ?: "error")
+            false
         }
-        hilo.start()
-
-        while (hilo.isAlive){
-            Log.d("conexion", "Enviando datos")}
     }
 
     fun updateAlumno(alumno : MutableList<BasicNameValuePair>){
