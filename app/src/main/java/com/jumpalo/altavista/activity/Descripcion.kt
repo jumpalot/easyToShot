@@ -97,7 +97,7 @@ class Descripcion : AppCompatActivity() {
                 im_ok.visibility = View.INVISIBLE
                 Thread {
                     var cont = 0
-                    while (cont<5) {
+                    while (cont<10) {
                         if(db.sendFoto(bitmap, alu.Carnet)) break
                         cont++
                     }
