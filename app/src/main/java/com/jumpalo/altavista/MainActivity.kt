@@ -2,19 +2,25 @@ package com.jumpalo.altavista
 
 import android.app.ActivityOptions
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.jumpalo.altavista.activity.ListarDivi
 import com.jumpalo.altavista.adapters.rv_cursosAdapter
 import com.jumpalo.altavista.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_divisiones.view.*
+import java.security.Permission
+import java.util.jar.Manifest
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ActivityMainBinding.inflate(layoutInflater).root)
+        verificarPermisos()
     }
 
     override fun onResume() {
@@ -59,6 +65,26 @@ class MainActivity : AppCompatActivity() {
         aux4.sortBy { it[0][0].hasImg }
         return aux4
     }
+    private fun verificarPermisos(){
+        val requestMultiplePermissionLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { permissions ->
+                permissions.entries.forEach {
+                    if(!it.value)
+                        Toast.makeText(this, "se requiere ${it.key}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        requestMultiplePermissionLauncher.launch(
+            arrayOf(
+                android.Manifest.permission.CAMERA,
+                android.Manifest.permission.INTERNET,
+                android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        )
+    }
+
 }
 
 typealias mlAlu = MutableList<Alumnos>
