@@ -15,9 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:allowBackup="false">
-        <activity android:name=".activity.ListarDivi"/>
-        <activity android:name=".activity.Descripcion" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.ListarDivi" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.Descripcion" android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
