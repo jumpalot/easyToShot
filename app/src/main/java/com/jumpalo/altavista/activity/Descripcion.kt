@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -110,7 +111,7 @@ class Descripcion : AppCompatActivity() {
                 imageView.setImageURI(result.uri)
                 contentResolver.delete(photoURI, null, null)
             } else if (resultCode == CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                println(result.error)
+                Log.e("result", result.error.message ?: "error")
             }
         }
     }
