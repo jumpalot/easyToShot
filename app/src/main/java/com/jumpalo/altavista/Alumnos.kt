@@ -4,9 +4,9 @@ class Alumnos(
     var Carnet:String="",
     var Nombre:String="",
     var Apellido:String="",
-    var Curso:String="",
-    var Division:String="",
-    var Turno:String="",
+    var Curso:String="0",
+    var Division:String="0",
+    var Turno:String="0",
     var Dni:String="",
     var hasImg:Int=0
 ){

@@ -2,7 +2,6 @@ package com.jumpalo.altavista
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -13,8 +12,6 @@ import com.jumpalo.altavista.adapters.rv_cursosAdapter
 import com.jumpalo.altavista.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_divisiones.view.*
-import java.security.Permission
-import java.util.jar.Manifest
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,34 +34,37 @@ class MainActivity : AppCompatActivity() {
         ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
     )
 
-    private fun ordenar(alums: mlAlu) : mlDiv {
-        alums.sortBy { it.Curso }                                                       /*por cursos*/
-        val aux = Array<mlAlu>(alums[alums.lastIndex].Curso.toInt()){ mutableListOf() }
-        val cursos : mlCur = mutableListOf()
-        for(al in alums) aux[al.Curso.toInt()-1].add(al)
-        for(indi in aux.indices)
-            if (aux[indi].isNotEmpty())
-                cursos.add(aux[indi])
-        var aux3 : Map<String,mlAlu>                                                    /*por divisiones*/
-        val aux4 : mlDiv = mutableListOf()
-        for(alum in cursos){
-            aux3 = HashMap()
-            for (al in alum) {
-                if(aux3.contains(al.Division)) aux3[al.Division]?.add(al)
-                else aux3[al.Division] = mutableListOf(al)
+    private fun ordenar(alums: mlAlu) : mlDiv{
+        //inicializar
+        val escuela : mlDiv = mutableListOf()
+        escuela.add(mutableListOf())
+        escuela[0].add(mutableListOf())
+        var anteriorCur = alums[0].Curso
+        var anteriorDiv = alums[0].Division
+        var indCur = 0
+        var indDiv = 0
+        //armar estructura
+        for (al in alums){
+            if(al.Curso!=anteriorCur){
+                anteriorCur = al.Curso
+                indDiv=-1
+                escuela.add(mutableListOf())
+                indCur++
             }
-            aux4.add(mutableListOf())
-            for(division in aux3)
-                aux4[aux4.lastIndex].add(division.component2())
+            if (al.Division!=anteriorDiv){
+                anteriorDiv = al.Division
+                escuela[indCur].add(mutableListOf())
+                indDiv++
+            }
+            escuela[indCur][indDiv].add(al)
         }
-        for (curso in aux4){
-            for (division in curso)
-                division.sortBy { it.hasImg }
-            curso.sortBy { it[0].hasImg }
-        }
-        aux4.sortBy { it[0][0].hasImg }
-        return aux4
+        //ordenar por quien tiene imagen
+        for (curso in escuela) curso.sortBy { it[0].hasImg }
+        escuela.sortBy { it[0][0].hasImg }
+
+        return escuela
     }
+
     private fun verificarPermisos(){
         val requestMultiplePermissionLauncher =
             registerForActivityResult(
