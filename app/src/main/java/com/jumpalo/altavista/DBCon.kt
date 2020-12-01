@@ -18,7 +18,8 @@ import java.io.ByteArrayOutputStream
 
 class DBCon {
     private val httpclient: HttpClient = DefaultHttpClient()
-    private val url = "https://itching-requirement.000webhostapp.com"
+    //private val url = "https://itching-requirement.000webhostapp.com"
+    private val url = "http://mattprofe.com.ar:81/alumno/3635/TESIS"
     fun getAlumnos() : MutableList<Alumnos>{
         val httppost = HttpPost("$url/getAlumnos.php")
         httpclient.getConnectionManager().schemeRegistry.register(
