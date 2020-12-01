@@ -27,12 +27,16 @@ class MainActivity : AppCompatActivity() {
         rv_cursos.setAdapter(rv_cursosAdapter(this, ordenados))
     }
 
-    fun listarDivi(v : View) = startActivity (
-        Intent(this, ListarDivi::class.java)
-            .putExtra("divi",v.tv_divi.text.substring(0,1))
-            .putExtra("curso",v.tag.toString().substring(0,1)),
-        ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
-    )
+    fun listarDivi(v : View) {
+        val divi = v.tv_divi.text.toString()
+        val curso = v.tag.toString()
+        startActivity (
+            Intent(this, ListarDivi::class.java)
+                .putExtra("divi",divi.substring(0,divi.length-1))
+                .putExtra("curso",curso),
+            ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
+        )
+    }
 
     private fun ordenar(alums: mlAlu) : mlDiv{
         //inicializar

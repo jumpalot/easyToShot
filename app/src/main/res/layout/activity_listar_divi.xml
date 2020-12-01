@@ -33,6 +33,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/pb_alumnos"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -41,7 +42,7 @@
             android:id="@+id/rv_alums"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/item_curso_desc"/>
+            tools:listitem="@layout/item_curso_desc" />
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
