@@ -14,6 +14,7 @@ import com.jumpalo.altavista.adapters.rv_cursosAdapter
 import com.jumpalo.altavista.databinding.ActivityMainBinding
 import com.jumpalo.altavista.databinding.DialogSolicitarUrlBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_solicitar_url.*
 import kotlinx.android.synthetic.main.dialog_solicitar_url.view.*
 import kotlinx.android.synthetic.main.item_divisiones.view.*
 import java.io.File
@@ -21,15 +22,16 @@ import java.io.File
 class MainActivity : AppCompatActivity() {
 
     var url = ""
-    private val urlFile = File(Environment.DIRECTORY_DOCUMENTS, "easyToShotURL.txt")
+    private lateinit var urlFile : File
     private lateinit var db : DBCon
+    private lateinit var alerta : AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ActivityMainBinding.inflate(layoutInflater).root)
+        urlFile = File(filesDir,"/easyToShotURL.txt")
         verificarPermisos()
         verificarURL()
-        db = DBCon(url)
     }
 
 
@@ -121,18 +123,21 @@ class MainActivity : AppCompatActivity() {
             solicitarURL()
         } else {
             url = urlFile.readText()
+            db = DBCon(url)
             if (!db.enLinea()) solicitarURL()
         }
     }
     private fun solicitarURL() {
-        val alerta = AlertDialog.Builder(this)
-        alerta.setView(DialogSolicitarUrlBinding.inflate(layoutInflater).root)
-        alerta.create().show()
+        val alertaBuilder = AlertDialog.Builder(this)
+        alertaBuilder.setView(DialogSolicitarUrlBinding.inflate(layoutInflater).root)
+        alerta = alertaBuilder.create()
+        alerta.show()
     }
     fun botonGuardar(v : View){
-        val nuevaUrl = v.ed_url.text.toString()
+        val nuevaUrl = alerta.ed_url.text.toString()
         urlFile.writeText(nuevaUrl)
         verificarURL()
+        alerta.dismiss()
     }
 
 }
