@@ -1,8 +1,10 @@
 package com.jumpalo.altavista
 
 import android.app.ActivityOptions
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -10,21 +12,45 @@ import androidx.appcompat.app.AppCompatActivity
 import com.jumpalo.altavista.activity.ListarDivi
 import com.jumpalo.altavista.adapters.rv_cursosAdapter
 import com.jumpalo.altavista.databinding.ActivityMainBinding
+import com.jumpalo.altavista.databinding.DialogSolicitarUrlBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_solicitar_url.view.*
 import kotlinx.android.synthetic.main.item_divisiones.view.*
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
+
+    var url = ""
+    private val urlFile = File(Environment.DIRECTORY_DOCUMENTS, "easyToShotURL.txt")
+    private lateinit var db : DBCon
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(ActivityMainBinding.inflate(layoutInflater).root)
         verificarPermisos()
+        verificarURL()
+        db = DBCon(url)
     }
+
 
     override fun onResume() {
         super.onResume()
-        val mlAlumnos = DBCon().getAlumnos()
-        val ordenados = ordenar(mlAlumnos)
-        rv_cursos.setAdapter(rv_cursosAdapter(this, ordenados))
+        if (db.enLinea()) {
+            val mlAlumnos = db.getAlumnos()
+            val ordenados = ordenar(mlAlumnos)
+            rv_cursos.setAdapter(rv_cursosAdapter(this, ordenados))
+        } else {
+            mostrarErrorDeConexion()
+        }
+    }
+
+    private fun mostrarErrorDeConexion() {
+        AlertDialog.Builder(this).apply {
+            setTitle("Error")
+            setMessage("Verifique su conexion")
+            setPositiveButton("Aceptar", null)
+            create().show()
+        }
     }
 
     fun listarDivi(v : View) {
@@ -33,7 +59,8 @@ class MainActivity : AppCompatActivity() {
         startActivity (
             Intent(this, ListarDivi::class.java)
                 .putExtra("divi",divi.substring(0,divi.length-1))
-                .putExtra("curso",curso),
+                .putExtra("curso",curso)
+                .putExtra("url", url),
             ActivityOptions.makeSceneTransitionAnimation(this).toBundle()
         )
     }
@@ -87,6 +114,25 @@ class MainActivity : AppCompatActivity() {
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
         )
+    }
+    private fun verificarURL() {
+        if (!urlFile.exists()){
+            urlFile.createNewFile()
+            solicitarURL()
+        } else {
+            url = urlFile.readText()
+            if (!db.enLinea()) solicitarURL()
+        }
+    }
+    private fun solicitarURL() {
+        val alerta = AlertDialog.Builder(this)
+        alerta.setView(DialogSolicitarUrlBinding.inflate(layoutInflater).root)
+        alerta.create().show()
+    }
+    fun botonGuardar(v : View){
+        val nuevaUrl = v.ed_url.text.toString()
+        urlFile.writeText(nuevaUrl)
+        verificarURL()
     }
 
 }

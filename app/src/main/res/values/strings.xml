@@ -20,4 +20,8 @@
     <string name="divisor">divisor</string>
     <string name="turno">Turno:</string>
     <string name="dni">Dni:</string>
+    <string name="editurl">URL del servidor</string>
+    <string name="guardar">Guardar</string>
+    <string name="url">url</string>
+    <string name="solicitarURL">No se pudo conectar con el servidor, le pedimos que nos confirme la url del mismo</string>
 </resources>

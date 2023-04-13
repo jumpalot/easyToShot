@@ -16,17 +16,35 @@ import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.http.message.BasicNameValuePair
 import java.io.ByteArrayOutputStream
 
-class DBCon {
+class DBCon (private val url : String){
+
     private val httpclient: HttpClient = DefaultHttpClient()
-    //private val url = "https://itching-requirement.000webhostapp.com"
-    //private val url = "http://mattprofe.com.ar:81/alumno/3635/TESIS"
-    private val url = "http://portalgardey.escuelarobertoarlt.com.ar/easyCarnet/"
-    fun getAlumnos() : MutableList<Alumnos>{
-        val httppost = HttpPost("$url/getAlumnos.php")
+    private val tachito = BasicResponseHandler()
+
+    init {
         httpclient.getConnectionManager().schemeRegistry.register(
             Scheme("https", SSLSocketFactory.getSocketFactory(), 443)
         )
-        val tachito = BasicResponseHandler()
+    }
+
+    fun enLinea() : Boolean {
+        val httppost = HttpPost("$url/ping.php")
+        var respuesta = ""
+        val hilo = Thread {
+            try {
+                respuesta = httpclient.execute(httppost, tachito)
+            } catch (e: java.lang.Exception) {
+                Log.e("Error", "Exception: " + e.message)
+            }
+        }
+        hilo.start()
+        while (hilo.isAlive){
+            Log.d("conexion", "Recibiendo datos")}
+        return respuesta == "pong!"
+    }
+
+    fun getAlumnos() : MutableList<Alumnos>{
+        val httppost = HttpPost("$url/getAlumnos.php")
         var respuesta = ""
         val hilo = Thread {
             try {
@@ -44,10 +62,6 @@ class DBCon {
 
     fun getDivi(curso: String, divi : String) : MutableList<Alumnos>{
         val httppost = HttpPost("$url/getDivision.php")
-        httpclient.getConnectionManager().schemeRegistry.register(
-            Scheme("https", SSLSocketFactory.getSocketFactory(), 443)
-        )
-        val tachito = BasicResponseHandler()
         var respuesta = ""
         val valores = mutableListOf(
             BasicNameValuePair("curso", curso),
@@ -70,10 +84,6 @@ class DBCon {
 
     fun getFoto(carnet: String) : Bitmap?{
         val httppost = HttpPost("$url/getFoto.php")
-        httpclient.getConnectionManager().schemeRegistry.register(
-            Scheme("https", SSLSocketFactory.getSocketFactory(), 443)
-        )
-        val tachito = BasicResponseHandler()
         var respuesta = ""
         val valores = mutableListOf(
             BasicNameValuePair("carnet", carnet)
@@ -96,15 +106,11 @@ class DBCon {
 
     fun sendFoto(img:Bitmap, carnet: String) : Boolean{
         val httppost = HttpPost("$url/setFoto.php")
-        httpclient.getConnectionManager().schemeRegistry.register(
-            Scheme("https", SSLSocketFactory.getSocketFactory(), 443)
-        )
         val byt = ByteArrayOutputStream()
         img.compress(Bitmap.CompressFormat.JPEG, 100, byt)
         val imagen = Base64.encodeToString(byt.toByteArray(), Base64.DEFAULT)
         //Log.i("imagen", imagen)
         //Log.i("carnet", carnet)
-        val tachito = BasicResponseHandler()
         val valores = mutableListOf(
             BasicNameValuePair("carnet", carnet),
             BasicNameValuePair("foto", imagen)
@@ -121,10 +127,6 @@ class DBCon {
 
     fun updateAlumno(alumno : MutableList<BasicNameValuePair>){
         val httppost = HttpPost("$url/updateAlumnos.php")
-        httpclient.getConnectionManager().schemeRegistry.register(
-            Scheme("https", SSLSocketFactory.getSocketFactory(), 443)
-        )
-        val tachito = BasicResponseHandler()
         val hilo = Thread {
             try{
                 httppost.entity = UrlEncodedFormEntity(alumno)

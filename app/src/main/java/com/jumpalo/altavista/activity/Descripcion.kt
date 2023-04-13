@@ -30,13 +30,15 @@ class Descripcion : AppCompatActivity() {
     private lateinit var photoURI : Uri
     private val codCaptura = 1
     private lateinit var alu : Alumnos
-    private val db = DBCon()
+    private lateinit var db : DBCon
     private var foto : Bitmap? = null
     private lateinit var sheet : BottomSheetDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_descripcion)
+        val url = intent.extras?.getString("url") ?: ""
+        db = DBCon(url)
 
         alu = Alumnos().also {
             it.fromString(
